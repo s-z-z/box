@@ -31,6 +31,10 @@ func PhaseOKStr(s string) {
 	Ok("%s   %s", symbol.OK, s)
 }
 
+func PhaseOKFormat(format string, a ...interface{}) {
+	Ok("%s   %s", symbol.OK, fmt.Sprintf(format, a...))
+}
+
 func PhaseWarning() {
 	Warning("%s  ", symbol.WARN)
 }
