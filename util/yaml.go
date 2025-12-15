@@ -2,6 +2,7 @@ package util
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -130,4 +131,12 @@ func setSingleNodeValue(node *yaml.Node, value any) error {
 		return fmt.Errorf("unsupported value type: %T", value)
 	}
 	return nil
+}
+
+func UnmarshalFile(filePath string, v any) error {
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		return err
+	}
+	return yaml.Unmarshal(data, v)
 }
