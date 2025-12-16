@@ -45,3 +45,13 @@ func ParseSince(duration string) (*time.Time, error) {
 	since := time.Now().UTC().Add(-*dur)
 	return &since, nil
 }
+
+func FormatInE8(t time.Time) (string, error) {
+	cstLocation := time.FixedZone("CST", 8*3600)
+	return FormatInLocation(t, cstLocation, "2006-01-02 15:04:05")
+}
+
+func FormatInLocation(t time.Time, location *time.Location, format string) (string, error) {
+	lt := t.In(location)
+	return lt.Format(format), nil
+}
