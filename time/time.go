@@ -46,6 +46,19 @@ func ParseSince(duration string) (*time.Time, error) {
 	return &since, nil
 }
 
+func UTC2E8Str(timeStr string) (string, error) {
+	utcTime, err := time.Parse(time.RFC3339, timeStr)
+	if err != nil {
+		return "", err
+	}
+	cstLoc, err := time.LoadLocation("Asia/Shanghai")
+	if err != nil {
+		return "", err
+	}
+	cstTime := utcTime.In(cstLoc)
+	return cstTime.Format(time.DateTime), nil
+}
+
 func FormatInE8(t time.Time) (string, error) {
 	cstLocation := time.FixedZone("CST", 8*3600)
 	return FormatInLocation(t, cstLocation, "2006-01-02 15:04:05")
@@ -54,4 +67,27 @@ func FormatInE8(t time.Time) (string, error) {
 func FormatInLocation(t time.Time, location *time.Location, format string) (string, error) {
 	lt := t.In(location)
 	return lt.Format(format), nil
+}
+
+func IsWithin(timeStr string, duration time.Duration) (bool, error) {
+	targetTime, err := time.Parse(time.RFC3339, timeStr)
+	if err != nil {
+		return false, err
+	}
+
+	now := time.Now()
+
+	diff := targetTime.Sub(now)
+	if diff < 0 {
+		diff = -diff
+	}
+	return diff < duration, nil
+}
+
+func IsWithinNMinute(timeStr string, n int) (bool, error) {
+	return IsWithin(timeStr, time.Duration(n)*time.Minute)
+}
+
+func IsWithin1Minute(timeStr string) (bool, error) {
+	return IsWithinNMinute(timeStr, 1)
 }
